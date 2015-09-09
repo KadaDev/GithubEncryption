@@ -8,5 +8,7 @@ Encrypts files using the public github keys of all users with push access to the
 
 # Usage
 Edit files.conf to add files that you want to encrypt.
+
 run `ruby encrypt.rb` to encrypt the files
+
 run `ruby decrypt.rb` to decrypt the files
