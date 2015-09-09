@@ -3,7 +3,6 @@ require "bundler/setup"
 
 require "octokit"
 require "json"
-require 'pp'
 require 'fileutils'
 
 FileUtils::mkdir_p 'tmpkeys'
@@ -55,7 +54,6 @@ keys = []
 collabs = Octokit.collabs repo_name
 collabs.each do |user|
     Octokit.user_keys(user.login).each do | key|
-        puts pp key
         keys.push(key)
     end
 
@@ -77,17 +75,18 @@ keys.each do |key|
         keynames.push("tmpkeys/#{keyname}.pem")
     end
 end
-infile = "test.txt"
-outfile = "test.encrypted"
-encrypted = ""
-keynames.each do | keyname|
-    cmdline = "openssl rsautl -encrypt -in #{infile} -pubin -inkey #{keyname}"
-    puts cmdline
-    encrypted += %x(#{cmdline})
-    if ($? != 0)
-        puts 'Someting went wrong!'
-        break
+files = File.readlines('files.conf')
+files.each do |filename|
+    filename = filename.chomp
+    encrypted = ""
+    keynames.each do | keyname|
+        cmdline = "openssl rsautl -encrypt -in #{filename} -pubin -inkey #{keyname}"
+        encrypted += %x(#{cmdline})
+        if ($? != 0)
+            puts 'Someting went wrong!'
+            break
+        end
     end
-end
 
-File.open(outfile, 'w') { |file| file.write(encrypted)}
+    File.open(filename, 'w') { |file| file.write(encrypted)}
+end
