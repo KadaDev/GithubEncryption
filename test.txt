@@ -1,0 +1,1 @@
+This is a test file. Any file could be encrypted, but they have to be quite small, preferably under 240bytes.
